@@ -1,5 +1,7 @@
 package main
 
+//https://hereandabove.com/maze/mazeorig.form.html
+
 import (
 	"errors"
 	"image"
