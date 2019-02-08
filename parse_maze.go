@@ -9,32 +9,6 @@ import (
 	"log"
 )
 
-// Maze -
-type Maze struct {
-	image    image.Image
-	start    image.Point
-	finish   image.Point
-	NECorner image.Point
-	NWCorner image.Point
-	SECorner image.Point
-	SWCorner image.Point
-}
-
-func (maze *Maze) width() int {
-	size := maze.image.Bounds().Size()
-	return size.X
-}
-
-func (maze *Maze) height() int {
-	size := maze.image.Bounds().Size()
-	return size.Y
-}
-
-func (maze *Maze) widthHeight() (int, int) {
-	size := maze.image.Bounds().Size()
-	return size.X, size.Y
-}
-
 // XAxis key
 const XAxis = "x_axis"
 
@@ -242,7 +216,7 @@ func isWall(c color.Color) bool {
 
 func validPoint(p image.Point, maze *Maze) bool {
 	w, h := maze.widthHeight()
-	return p.X > 0 && p.X < w && p.Y > 0 && p.Y < h
+	return p.X >= 0 && p.X < w && p.Y >= 0 && p.Y < h
 }
 
 func getColorFromPoint(p image.Point, maze *Maze) color.Color {
@@ -273,8 +247,4 @@ func getNeighbors(p image.Point, maze *Maze) []image.Point {
 	}
 
 	return neighbors
-}
-
-func buildGraph(maze *Maze) {
-
 }

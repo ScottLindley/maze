@@ -20,5 +20,7 @@ func main() {
 	maze := Maze{image: image}
 	markCorners(&maze)
 	markDoors(&maze)
-	buildGraph(&maze)
+	graph := buildGraph(&maze)
+
+	log.Print(graph)
 }
