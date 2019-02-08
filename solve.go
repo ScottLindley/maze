@@ -7,9 +7,11 @@ import (
 
 func buildGraph(maze *Maze) map[Node][]Node {
 	graph := make(map[Node][]Node)
+	start := Node{point: maze.start}
+	graph[start] = []Node{}
 	seen := make(map[string]bool)
 	queue := []Node{}
-	queue = append(queue, Node{point: maze.start})
+	queue = append(queue, start)
 
 	for len(queue) > 0 {
 		node := queue[0]
@@ -17,16 +19,16 @@ func buildGraph(maze *Maze) map[Node][]Node {
 		queue = queue[1:]
 		log.Print("Q len ", len(queue))
 		seen[pointKey(point)] = true
-		_, inGraph := graph[node]
-		if shouldMakeNode(point, maze) && !inGraph {
-			graph[node] = []Node{}
-		}
+
 		neighbors := getValidNeighbors(point, maze)
 		log.Print("neigh   ", neighbors)
 		for _, n := range neighbors {
 			neighborNode := Node{point: n}
 			graph[node] = append(graph[node], neighborNode)
-			if _, inGraph := graph[]
+			_, inGraph := graph[neighborNode]
+			if shouldMakeNode(point, maze) && !inGraph {
+				graph[neighborNode] = []Node{}
+			}
 			if !seen[pointKey(n)] {
 				queue = append(queue, neighborNode)
 			} else {
