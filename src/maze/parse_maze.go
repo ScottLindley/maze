@@ -1,12 +1,12 @@
-package main
-
-//https://hereandabove.com/maze/mazeorig.form.html
+package maze
 
 import (
 	"errors"
 	"image"
 	"image/color"
 	"log"
+
+	"../models"
 )
 
 // XAxis key
@@ -27,7 +27,7 @@ const WEST = 2
 // EAST neighbor index
 const EAST = 3
 
-func markDoors(maze *Maze) {
+func MarkDoors(maze *models.Maze) {
 	foundStart := false
 
 	// walk north wall
@@ -37,10 +37,10 @@ func markDoors(maze *Maze) {
 		if isDoor(p, maze) {
 			if !foundStart {
 				foundStart = true
-				maze.start = p
+				maze.Start = p
 				p.X++
 			} else {
-				maze.finish = p
+				maze.Finish = p
 				return
 			}
 		}
@@ -53,10 +53,10 @@ func markDoors(maze *Maze) {
 		if isDoor(p, maze) {
 			if !foundStart {
 				foundStart = true
-				maze.start = p
+				maze.Start = p
 				p.X++
 			} else {
-				maze.finish = p
+				maze.Finish = p
 				return
 			}
 		}
@@ -69,10 +69,10 @@ func markDoors(maze *Maze) {
 		if isDoor(p, maze) {
 			if !foundStart {
 				foundStart = true
-				maze.start = p
+				maze.Start = p
 				p.Y++
 			} else {
-				maze.finish = p
+				maze.Finish = p
 				return
 			}
 		}
@@ -85,17 +85,17 @@ func markDoors(maze *Maze) {
 		if isDoor(p, maze) {
 			if !foundStart {
 				foundStart = true
-				maze.start = p
+				maze.Start = p
 				p.Y++
 			} else {
-				maze.finish = p
+				maze.Finish = p
 				return
 			}
 		}
 	}
 }
 
-func walk(start image.Point, maze *Maze, axis string) image.Point {
+func walk(start image.Point, maze *models.Maze, axis string) image.Point {
 	w := maze.NECorner.X
 	h := maze.SECorner.Y
 
@@ -109,13 +109,13 @@ func walk(start image.Point, maze *Maze, axis string) image.Point {
 		bound = h
 	}
 
-	c := maze.image.At(start.X, start.Y)
+	c := maze.Image.At(start.X, start.Y)
 	for isWall(c) && walker < bound {
 		walker++
 		if axis == XAxis {
-			c = maze.image.At(walker, start.Y)
+			c = maze.Image.At(walker, start.Y)
 		} else {
-			c = maze.image.At(start.X, walker)
+			c = maze.Image.At(start.X, walker)
 		}
 	}
 
@@ -125,8 +125,8 @@ func walk(start image.Point, maze *Maze, axis string) image.Point {
 	return image.Point{X: start.X, Y: walker}
 }
 
-func markCorners(maze *Maze) {
-	width, height := maze.widthHeight()
+func MarkCorners(maze *models.Maze) {
+	width, height := maze.WidthHeight()
 
 	topLeft, err := findTopLeftCorner(maze)
 	if err != nil {
@@ -136,35 +136,35 @@ func markCorners(maze *Maze) {
 	maze.NWCorner = topLeft
 
 	for x := width - 1; x >= topLeft.X; x-- {
-		if isWall(maze.image.At(x, topLeft.Y)) {
+		if isWall(maze.Image.At(x, topLeft.Y)) {
 			maze.NECorner = image.Point{X: x, Y: topLeft.Y}
 			break
 		}
 	}
 
 	for y := height - 1; y >= topLeft.Y; y-- {
-		if isWall(maze.image.At(topLeft.X, y)) {
+		if isWall(maze.Image.At(topLeft.X, y)) {
 			maze.SWCorner = image.Point{X: topLeft.X, Y: y}
 			break
 		}
 	}
 
 	for x := width - 1; x >= maze.SWCorner.X; x-- {
-		if isWall(maze.image.At(x, maze.SWCorner.Y)) {
+		if isWall(maze.Image.At(x, maze.SWCorner.Y)) {
 			maze.SECorner = image.Point{X: x, Y: maze.SWCorner.Y}
 			break
 		}
 	}
 }
 
-func findTopLeftCorner(maze *Maze) (image.Point, error) {
+func findTopLeftCorner(maze *models.Maze) (image.Point, error) {
 	x := 0
 	y := 0
-	width, height := maze.widthHeight()
+	width, height := maze.WidthHeight()
 
 	for y < height {
 		for x < width {
-			c := maze.image.At(x, y)
+			c := maze.Image.At(x, y)
 			if isWall(c) {
 				return image.Point{X: x, Y: y}, nil
 			}
@@ -177,8 +177,8 @@ func findTopLeftCorner(maze *Maze) (image.Point, error) {
 	return image.Point{X: x, Y: y}, errors.New("no walls found")
 }
 
-func isDoor(p image.Point, maze *Maze) bool {
-	c := maze.image.At(p.X, p.Y)
+func isDoor(p image.Point, maze *models.Maze) bool {
+	c := maze.Image.At(p.X, p.Y)
 	if isWall(c) {
 		return false
 	}
@@ -211,22 +211,22 @@ func isWall(c color.Color) bool {
 	return avg < 128
 }
 
-func validPoint(p image.Point, maze *Maze) bool {
-	w, h := maze.widthHeight()
+func validPoint(p image.Point, maze *models.Maze) bool {
+	w, h := maze.WidthHeight()
 	return p.X >= 0 && p.X < w && p.Y >= 0 && p.Y < h
 }
 
-func getColorFromPoint(p image.Point, maze *Maze) color.Color {
-	return maze.image.At(p.X, p.Y)
+func getColorFromPoint(p image.Point, maze *models.Maze) color.Color {
+	return maze.Image.At(p.X, p.Y)
 }
 
-func getNeighbors(p image.Point, maze *Maze) []image.Point {
+func getNeighbors(p image.Point, maze *models.Maze) []image.Point {
 	neighbors := make([]image.Point, 4)
 	for i := 0; i < 4; i++ {
 		neighbors[i] = image.Point{X: -1, Y: -1}
 	}
 
-	width, height := maze.widthHeight()
+	width, height := maze.WidthHeight()
 	x := p.X
 	y := p.Y
 
