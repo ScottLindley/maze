@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	reader, err := os.Open("./maze_assets/maze_sm_1.png")
+	reader, err := os.Open("./maze_assets/maze_md.png")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,4 +23,6 @@ func main() {
 	graph := buildGraph(&maze)
 
 	log.Print(graph)
+
+	drawGraph(&maze, graph)
 }

@@ -1,6 +1,9 @@
 package main
 
-import "image"
+import (
+	"image"
+	"image/color"
+)
 
 // Maze -
 type Maze struct {
@@ -31,6 +34,21 @@ func (maze *Maze) widthHeight() (int, int) {
 // Node -
 type Node struct {
 	point image.Point
+}
+
+// Edge -
+type Edge struct {
+	length int
+	from   Node
+	to     Node
+}
+
+// Changeable -
+type Changeable interface {
+	Set(x, y int, c color.Color)
+	At(x, y int) color.Color
+	Bounds() image.Rectangle
+	ColorModel() color.Model
 }
 
 // Queue -

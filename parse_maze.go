@@ -27,9 +27,6 @@ const WEST = 2
 // EAST neighbor index
 const EAST = 3
 
-type mazeGraph struct {
-}
-
 func markDoors(maze *Maze) {
 	foundStart := false
 

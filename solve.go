@@ -3,9 +3,49 @@ package main
 import (
 	"image"
 	"log"
+	"math"
 )
 
-func buildGraph(maze *Maze) map[Node][]Node {
+func distanceFromNodes(a, b Node) int {
+	if a.point.X == b.point.X {
+		return int(math.Abs(float64(a.point.Y) - float64(b.point.Y)))
+	}
+	return int(math.Abs(float64(a.point.X) - float64(b.point.X)))
+}
+
+func dfs(maze *Maze, graph map[Node][]Edge, seen map[string]bool, lastNode Node, currentPoint image.Point) {
+	neighbors := getValidNeighbors(currentPoint, maze)
+	for _, n := range neighbors {
+		// new node -- process it
+		if !seen[pointKey(n)] {
+			seen[pointKey(n)] = true
+			node := Node{point: n}
+			// we should make a node here -- add it to the graph
+			if shouldMakeNode(n, maze) {
+				graph[node] = []Edge{}
+				distance := distanceFromNodes(lastNode, node)
+				edge := Edge{from: lastNode, to: node, length: distance}
+				graph[lastNode] = append(graph[lastNode], edge)
+				dfs(maze, graph, seen, node, node.point)
+			} else {
+				dfs(maze, graph, seen, lastNode, n)
+			}
+		}
+	}
+}
+
+func buildGraph(maze *Maze) map[Node][]Edge {
+	graph := make(map[Node][]Edge)
+	start := Node{point: maze.start}
+	finish := Node{point: maze.finish}
+	graph[start] = []Edge{}
+	graph[finish] = []Edge{}
+	seen := make(map[string]bool)
+	dfs(maze, graph, seen, start, maze.start)
+	return graph
+}
+
+func buildGraph2(maze *Maze) map[Node][]Node {
 	graph := make(map[Node][]Node)
 	start := Node{point: maze.start}
 	graph[start] = []Node{}
@@ -21,7 +61,6 @@ func buildGraph(maze *Maze) map[Node][]Node {
 		seen[pointKey(point)] = true
 
 		neighbors := getValidNeighbors(point, maze)
-		log.Print("neigh   ", neighbors)
 		for _, n := range neighbors {
 			neighborNode := Node{point: n}
 			graph[node] = append(graph[node], neighborNode)
@@ -44,37 +83,17 @@ func pointKey(p image.Point) string {
 }
 
 func shouldMakeNode(p image.Point, maze *Maze) bool {
-	neighbors := getNeighbors(p, maze)
-
-	options := 0
-	// n := false
-	// s := false
-	// e := false
-	// w := false
-
-	if validPoint(neighbors[NORTH], maze) && isInsideMaze(neighbors[NORTH], maze) {
-		options++
-		// n = true
-	}
-	if validPoint(neighbors[SOUTH], maze) && isInsideMaze(neighbors[SOUTH], maze) {
-		options++
-		// s = true
-	}
-	if validPoint(neighbors[EAST], maze) && isInsideMaze(neighbors[EAST], maze) {
-		options++
-		// e = true
-	}
-	if validPoint(neighbors[WEST], maze) && isInsideMaze(neighbors[WEST], maze) {
-		options++
-		// w = true
-	}
-
-	if options > 2 {
+	neighbors := getValidNeighbors(p, maze)
+	log.Print(neighbors)
+	if len(neighbors) > 2 {
 		return true
 	}
-	// if (n && s) || (e && w) {
-	// 	return true
-	// }
+	if len(neighbors) == 2 {
+		a, b := neighbors[0], neighbors[1]
+		if (a.X == b.X) || (a.Y == b.Y) {
+			return false
+		}
+	}
 	return false
 }
 
