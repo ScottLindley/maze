@@ -102,6 +102,7 @@ func Solve(graph map[string]*models.Node, maze *models.Maze) []image.Point {
 		path = append(path, current.Point)
 		current = current.CameFrom
 	}
+	path = append(path, maze.Start)
 	return path
 }
 
@@ -122,6 +123,7 @@ func shouldMakeNode(p image.Point, maze *models.Maze) bool {
 		if (a.X == b.X) || (a.Y == b.Y) {
 			return false
 		}
+		return true
 	}
 	return false
 }

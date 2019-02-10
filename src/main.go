@@ -26,7 +26,7 @@ func main() {
 	maze.MarkCorners(m)
 	maze.MarkDoors(m)
 	graph := maze.BuildGraph(m)
-	maze.DrawGraph(m, graph)
+	// maze.DrawGraph(m, graph)
 
 	path := maze.Solve(graph, m)
 	maze.DrawPath(m, path)

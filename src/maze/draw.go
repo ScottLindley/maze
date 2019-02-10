@@ -53,7 +53,7 @@ func DrawPath(m *maze, path []image.Point) {
 	current := 0
 	next := 1
 	for next < len(path) {
-		DrawPointConn(path[current], path[next], outImg)
+		DrawPointConn(m, path[current], path[next], outImg)
 		current = next
 		next++
 	}
@@ -65,6 +65,39 @@ func DrawPath(m *maze, path []image.Point) {
 }
 
 // DrawPointConn -
-func DrawPointConn(a, b image.Point, img changeable) {
+func DrawPointConn(m *maze, a, b image.Point, img changeable) {
 	img.Set(a.X, a.Y, color.RGBA{0, 0, 255, 255})
+	img.Set(b.X, b.Y, color.RGBA{0, 0, 255, 255})
+	start := 0
+	end := 0
+	write := "x"
+
+	if a.X == b.X {
+		if a.Y < b.Y {
+			start = a.Y
+			end = b.Y
+		} else {
+			start = b.Y
+			end = a.Y
+		}
+		write = "y"
+	} else if a.Y == b.Y {
+		if a.X < b.X {
+			start = a.X
+			end = b.X
+		} else {
+			start = b.X
+			end = a.X
+		}
+		write = "x"
+	}
+
+	for start < end {
+		if write == "x" {
+			img.Set(start, a.Y, color.RGBA{0, 0, 255, 255})
+		} else {
+			img.Set(a.X, start, color.RGBA{0, 0, 255, 255})
+		}
+		start++
+	}
 }
