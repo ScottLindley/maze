@@ -49,7 +49,7 @@ Now we walk along the walls looking for light colored pixels. There should be tw
 
 #### Build a graph
 
-Build n graph using adjacency matrix. It's built using a recursive depth first search algorithm that links neighboring nodes as it decends. But where to place the nodes? At first thought we could place one at each point along the path. But that seems a little unecessary. Why create and link a bunch of nodes down a straight corridor? We really want to create nodes at _decision_ points. The points at which the algorithm has to decide which path to take are critical. So they become nodes in our graph. Those point are marked below in red.
+Build a graph using adjacency matrix. It's built using a recursive depth first search algorithm that links neighboring nodes as it decends. But where to place the nodes? At first thought we could place one at each point along the path. But that seems a little unecessary. Why create and link a bunch of nodes down a straight corridor? We really want to create nodes at _decision_ points. The points at which the algorithm has to decide which path to take are critical. So they become nodes in our graph. Those point are marked below in red.
 
 ![Decisions](./readme_assets/decisions.png "Decisions")
 
