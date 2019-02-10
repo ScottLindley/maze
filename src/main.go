@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	reader, err := os.Open("./maze_assets/maze_lg.png")
+	reader, err := os.Open("./maze_assets/maze_md.png")
 	if err != nil {
 		log.Fatal(err)
 	}
