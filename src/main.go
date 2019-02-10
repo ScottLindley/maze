@@ -1,7 +1,5 @@
 package main
 
-// https://hereandabove.com/maze/mazeorig.form.html
-
 import (
 	"image/png"
 	"log"
@@ -12,7 +10,11 @@ import (
 )
 
 func main() {
-	reader, err := os.Open("./maze_assets/maze_md.png")
+	if len(os.Args) < 2 {
+		log.Fatal("image path required")
+	}
+	imagePath := os.Args[1]
+	reader, err := os.Open(imagePath)
 	if err != nil {
 		log.Fatal(err)
 	}
